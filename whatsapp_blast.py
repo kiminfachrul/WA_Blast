@@ -7,20 +7,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pandas as pd
+import pandas as pd 
 
-# Baca file Excel
+# FICCCC APOEMOe4r4
 df = pd.read_excel('data_user.xlsx')
 
-# Inisialisasi driver Selenium
+# untuk driver Selenium
 options = webdriver.ChromeOptions()
 options.add_argument("user-data-dir=C:/Users/Fachrul Islam/AppData/Local/Google/Chrome/User Data/profile 4")
-options.add_argument("profile-directory=Profile 2")
+options.add_argument("profile-directory=Profile 1")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Buka WhatsApp Web
 driver.get('https://web.whatsapp.com/')
-input("Scan QR code dan tekan Enter setelah login...")
+# input("Scan QR code dan tekan Enter setelah login...")
 
 # Fungsi untuk mengirim pesan
 def kirim_pesan(nomor, nama, pesan):
@@ -28,26 +28,33 @@ def kirim_pesan(nomor, nama, pesan):
     driver.get(f'https://web.whatsapp.com/send?phone={nomor}&text={pesan}')
     
     try:
+        # search_box = WebDriverWait(driver, 20).until(
+        #     EC.presence_of_element_located((By.XPATH, '//div[@data-testid="chat-list-search"]//p[@contenteditable="true"]'))
+        # )
+        # search_box.clear()
+        # search_box.send_keys(nomor)
+        # search_box.send_keys(Keys.ENTER)
+
         # Tunggu hingga pesan terisi di kotak chat
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]'))
         )
-        
-        # Tunggu sebentar untuk memastikan elemen telah di-load sepenuhnya
+    
         time.sleep(3)
         
         # Tekan tombol Enter untuk mengirim pesan
         message_box = driver.find_element(By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]')
+        message_box.send_keys(pesan)
         message_box.send_keys(Keys.ENTER)
 
         print(f"Pesan berhasil dikirim ke {nama} ({nomor})")
         
-        time.sleep(3)  # Tunggu sebentar setelah mengirim pesan
+        time.sleep(3) 
         
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor}): {str(e)}")
 
-# Loop melalui 10 baris pertama dari DataFrame
+# disini fungsi loop di eksekusi
 for index, row in df.head(2).iterrows():
     id_pelanggan = row['id_pelanggan']
     nama = row['nama']
@@ -61,6 +68,6 @@ for index, row in df.head(2).iterrows():
         kirim_pesan(nomor_wa, nama, pesan)
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor_wa}): {str(e)}")
-        
+
 # Tutup browser
 driver.quit()
