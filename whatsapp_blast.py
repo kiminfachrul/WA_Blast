@@ -9,14 +9,29 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd 
 
-# FICCCC APOEMOe4r4
 df = pd.read_excel('data_user.xlsx')
 
-# untuk driver Selenium
+user_data = "user-data-dir=C:\\Users\\Core i7\\AppData\\Local\\Google\\Chrome\\User Data"
 options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:/Users/Fachrul Islam/AppData/Local/Google/Chrome/User Data/profile 4")
-options.add_argument("profile-directory=Profile 1")
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+options.add_experimental_option("prefs", {
+    # "download.default_directory": download_dir,
+    # "download.prompt_for_download": False,
+    # "download.directory_upgrade": True,
+    # "safebrowsing.enabled": False,
+    # "profile.default_content_setting_values.automatic_downloads": 1
+})
+
+# options.add_argument("--allow-running-insecure-content")
+# options.add_argument("--disable-web-security")
+options.add_argument(user_data)
+# options.add_argument("--profile-directory=Profile 1")
+# options.add_experimental_option("detach", True)
+driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+# untuk driver Selenium
+# options = webdriver.ChromeOptions()
+# options.add_argument("user-data-dir=C:/Users/CORE i7/AppData/Local/Google/Chrome/User Data/Profile 1/Profile 1/Profile 1")
+# options.add_argument("profile-directory=Profile 1")
+# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Buka WhatsApp Web
 driver.get('https://web.whatsapp.com/')
