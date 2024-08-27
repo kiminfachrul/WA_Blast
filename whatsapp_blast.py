@@ -1,4 +1,5 @@
 import time
+import random
 import pyautogui
 import pyperclip
 from webdriver_manager.chrome import ChromeDriverManager
@@ -29,7 +30,6 @@ def kirim_pesan(nomor_wa, nama, pesan):
     driver.get(f'https://web.whatsapp.com/send?phone={nomor_wa}&text={pesan}')
     
     try:
-
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]'))
         )
@@ -38,7 +38,6 @@ def kirim_pesan(nomor_wa, nama, pesan):
 
         # Tekan tombol Enter untuk mengirim pesan
         message_box = driver.find_element(By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]')
-        # message_box.send_keys(pesan)
 
         #Klik logo attach
         x, y = pyautogui.locateCenterOnScreen("lampir.png", confidence= 0.9)
@@ -52,18 +51,20 @@ def kirim_pesan(nomor_wa, nama, pesan):
         pyautogui.leftClick()
         time.sleep(1)
 
-        #Menyalin path lokasi gambar/iimage
-        file_path = r"D:\WAB\sebaran.png" #Ubah sesuai path yang di inginkan
+        #Menyalin path lokasi gambar/image
+        file_path = r"D:\WAB\sebaran.png" # Ubah sesuai path yang diinginkan
         pyperclip.copy(file_path)
         pyautogui.sleep(2)
         pyautogui.hotkey("ctrl", "v")
         
+        #Klik open foto utu
         pyautogui.sleep(1)
         x, y = pyautogui.locateCenterOnScreen("open.png", confidence= 0.9)
         pyautogui.moveTo(x, y, duration = 1)
         pyautogui.leftClick()
         pyautogui.sleep(1)
-
+        
+        #Klik logo kirim
         x, y = pyautogui.locateCenterOnScreen("send.png", confidence= 0.9)
         pyautogui.moveTo(x, y, duration = 1)
         pyautogui.leftClick()
@@ -74,8 +75,8 @@ def kirim_pesan(nomor_wa, nama, pesan):
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor_wa}): {str(e)}")
 
-# disini fungsi loop di eksekusi
-for index, row in df.head(10).iterrows():
+# Disini fungsi loop dieksekusi
+for index, row in df.iterrows():
     id_pelanggan = row['id_pelanggan']
     nama = row['nama']
     nomor_wa = row['nomor_wa']
@@ -83,11 +84,19 @@ for index, row in df.head(10).iterrows():
     teks_pesan = row['teks']
     
     # Buat pesan
-    pesan = f"HELLO PIONER!! {nama}, ini adalah pesan otomatis untuk pelanggan PLN UP3 Makassar Selatan dengan ID: {id_pelanggan}. Status Anda saat ini adalah: {status}. \n {teks_pesan}" #pemanggilan teks_pesan ini di ambil dari excel
+    pesan = f"HELLO PIONER!! {nama},  \nini adalah pesan otomatis untuk pelanggan PLN UP3 Makassar Selatan dengan ID: {id_pelanggan}\nStatus Anda saat ini adalah: {status}\n{teks_pesan}" # pemanggilan teks_pesan ini diambil dari excel
 
     try:
         kirim_pesan(nomor_wa, nama, pesan)
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor_wa}): {str(e)}")
-        
+    
+    # Jeda antara pengiriman pesan ke nomor berikutnya
+    time.sleep(random.randint(7, 15))  # Jeda 5-15 detik secara acak
+
+    # Jeda antara batch
+    if (index + 1) % 3 == 0:  # Setelah setiap 3 pesan ke user_ID(Pelanggan)
+        print("Jeda batch, menunggu 2 menit ...")
+        time.sleep(120)  # Jeda 1 jam=3600detik 1 menit=60s setelah setiap 3 pesan atau sesuai yang di inginkan
+
 driver.quit()
