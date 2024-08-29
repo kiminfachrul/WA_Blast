@@ -1,5 +1,7 @@
 import time
+import random
 import pyautogui
+import pyperclip
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -11,31 +13,16 @@ import pandas as pd
 
 df = pd.read_excel('data_user.xlsx')
 
-user_data = "user-data-dir=C:\\Users\\Core i7\\AppData\\Local\\Google\\Chrome\\User Data"
+user_data = "user-data-dir=C:\\Users\\Fachrul Islam\\AppData\\Local\\Google\\Chrome\\User Data"
 options = webdriver.ChromeOptions()
 options.add_experimental_option("prefs", {
-    # "download.default_directory": download_dir,
-    # "download.prompt_for_download": False,
-    # "download.directory_upgrade": True,
-    # "safebrowsing.enabled": False,
-    # "profile.default_content_setting_values.automatic_downloads": 1
 })
-
-# options.add_argument("--allow-running-insecure-content")
-# options.add_argument("--disable-web-security")
 options.add_argument(user_data)
-# options.add_argument("--profile-directory=Profile 1")
-# options.add_experimental_option("detach", True)
-driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
-# untuk driver Selenium
-# options = webdriver.ChromeOptions()
-# options.add_argument("user-data-dir=C:/Users/CORE i7/AppData/Local/Google/Chrome/User Data/Profile 1/Profile 1/Profile 1")
-# options.add_argument("profile-directory=Profile 1")
-# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+options.add_argument("--profile-directory=Default")
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # Buka WhatsApp Web
 driver.get('https://web.whatsapp.com/')
-# input("Scan QR code dan tekan Enter setelah login...")
 
 # Fungsi untuk mengirim pesan
 def kirim_pesan(nomor_wa, nama, pesan):
@@ -43,7 +30,7 @@ def kirim_pesan(nomor_wa, nama, pesan):
     driver.get(f'https://web.whatsapp.com/send?phone={nomor_wa}&text={pesan}')
     
     try:
-        WebDriverWait(driver, 14).until(
+        WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]'))
         )
     
@@ -51,18 +38,45 @@ def kirim_pesan(nomor_wa, nama, pesan):
 
         # Tekan tombol Enter untuk mengirim pesan
         message_box = driver.find_element(By.XPATH, '//div[@class="x1hx0egp x6ikm8r x1odjw0f x1k6rcq7 x6prxxf"][@data-tab="10"]')
-        message_box.send_keys(pesan)
-        message_box.send_keys(Keys.ENTER)
+
+        #Klik logo attach
+        x, y = pyautogui.locateCenterOnScreen("lampir.png", confidence= 0.9)
+        pyautogui.moveTo(x, y, duration = 1)
+        pyautogui.leftClick()
+        time.sleep(1)
+
+        #Klik tambah foto atau video
+        x, y = pyautogui.locateCenterOnScreen("ft.png", confidence= 0.9)
+        pyautogui.moveTo(x, y, duration = 1)
+        pyautogui.leftClick()
+        time.sleep(1)
+
+        #Menyalin path lokasi gambar/image
+        file_path = r"D:\WAB\sebaran.png" # Ubah sesuai path yang diinginkan
+        pyperclip.copy(file_path)
+        pyautogui.sleep(2)
+        pyautogui.hotkey("ctrl", "v")
+        
+        #Klik open foto utu
+        pyautogui.sleep(1)
+        x, y = pyautogui.locateCenterOnScreen("open.png", confidence= 0.9)
+        pyautogui.moveTo(x, y, duration = 1)
+        pyautogui.leftClick()
+        pyautogui.sleep(1)
+        
+        #Klik logo kirim
+        x, y = pyautogui.locateCenterOnScreen("send.png", confidence= 0.9)
+        pyautogui.moveTo(x, y, duration = 1)
+        pyautogui.leftClick()
 
         print(f"Pesan berhasil dikirim ke {nama} ({nomor_wa})")
-        
-        time.sleep(2) 
+        time.sleep(6) 
         
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor_wa}): {str(e)}")
 
-# disini fungsi loop di eksekusi
-for index, row in df.head(2).iterrows():
+# Disini fungsi loop dieksekusi
+for index, row in df.iterrows():
     id_pelanggan = row['id_pelanggan']
     nama = row['nama']
     nomor_wa = row['nomor_wa']
@@ -70,12 +84,19 @@ for index, row in df.head(2).iterrows():
     teks_pesan = row['teks']
     
     # Buat pesan
-    pesan = f"HELLO!! {nama}, ini adalah pesan otomatis untuk pelanggan dengan ID: {id_pelanggan}. Status Anda saat ini adalah: {status}. \n {teks_pesan}"
+    pesan = f"HELLO PIONER!! {nama},  \nini adalah pesan otomatis untuk pelanggan PLN UP3 Makassar Selatan dengan ID: {id_pelanggan}\nStatus Anda saat ini adalah: {status}\n{teks_pesan}" # pemanggilan teks_pesan ini diambil dari excel
 
     try:
         kirim_pesan(nomor_wa, nama, pesan)
     except Exception as e:
         print(f"Gagal mengirim pesan ke {nama} ({nomor_wa}): {str(e)}")
+    
+    # Jeda antara pengiriman pesan ke nomor berikutnya
+    time.sleep(random.randint(7, 15))  # Jeda 5-15 detik secara acak
 
-# Tutup browser
+    # Jeda antara batch
+    if (index + 1) % 3 == 0:  # Setelah setiap 3 pesan ke user_ID(Pelanggan)
+        print("Jeda batch, menunggu 2 menit ...")
+        time.sleep(120)  # Jeda 1 jam=3600detik 1 menit=60s setelah setiap 3 pesan atau sesuai yang di inginkan
+
 driver.quit()
