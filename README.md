@@ -1,33 +1,34 @@
 # WhatsApp Automation Script
 
-## Deskripsi
-Script ini digunakan untuk mengirim pesan WhatsApp secara otomatis menggunakan Selenium, PyAutoGUI, dan Pandas. Script membaca data pelanggan dari file Excel dan mengirim pesan yang dipersonalisasi ke setiap pelanggan melalui WhatsApp Web. Script ini juga dilengkapi dengan fitur pengiriman lampiran (gambar/video) dan penambahan jeda pengiriman untuk menghindari deteksi spam oleh WhatsApp.
+## Description
+This script is designed to automatically send WhatsApp messages using Selenium, PyAutoGUI, and Pandas. The script reads customer data from an Excel file and sends personalized messages to each customer via WhatsApp Web. It also includes features for sending attachments (images/videos) and adding delays between messages to avoid being detected as spam by WhatsApp.
 
-## Library yang Digunakan
-Script ini menggunakan beberapa library Python berikut:
-1. **Selenium**: Digunakan untuk mengotomatisasi browser dan mengakses WhatsApp Web.
-2. **PyAutoGUI**: Digunakan untuk mengotomatisasi klik dan input mouse serta keyboard, khususnya untuk menangani elemen UI yang sulit diakses dengan Selenium.
-3. **Pyperclip**: Digunakan untuk memanipulasi clipboard, seperti menyalin path file gambar.
-4. **Pandas**: Digunakan untuk membaca dan mengelola data dari file Excel.
-5. **Webdriver Manager**: Digunakan untuk mengelola driver browser Chrome secara otomatis.
+## Libraries Used
+This script uses the following Python libraries:
+1. **Selenium**: Used to automate the browser and access WhatsApp Web.
+2. **PyAutoGUI**: Used to automate mouse clicks and keyboard inputs, particularly for handling UI elements that are difficult to access with Selenium.
+3. **Pyperclip**: Used for clipboard manipulation, such as copying the file path of an image.
+4. **Pandas**: Used to read and manage data from an Excel file.
+5. **Webdriver Manager**: Used to automatically manage the Chrome browser driver.
 
-## Instalasi Dependensi
-Sebelum menjalankan script, Anda perlu menginstal semua dependensi yang dibutuhkan. Jalankan perintah berikut di terminal atau command prompt:
-> pip install selenium pyautogui pyperclip pandas webdriver-manager
-> file_path = r"D:\WAB\sebaran.png"
+## Dependency Installation
+Before running the script, you need to install all required dependencies. Run the following command in your terminal or command prompt:
+```sh
+pip install selenium pyautogui pyperclip pandas webdriver-manager
+```
 
-## Pengaturan dan Penyesuaian Kode
+## Setup and Code Customization
 
-1. **File Excel (`data_user.xlsx`)**:
-   Pastikan file Excel dengan nama `data_user.xlsx` berada di direktori yang sama dengan script. File ini harus memiliki kolom berikut:
-   - `id_pelanggan`: ID pelanggan.
-   - `nama`: Nama pelanggan.
-   - `nomor_wa`: Nomor WhatsApp pelanggan (format internasional, tanpa tanda +).
-   - `status`: Status pelanggan.
-   - `teks`: Teks pesan tambahan yang ingin disertakan dalam pesan WhatsApp.
+1. **Excel File (`data_user.xlsx`)**:
+   Ensure that the Excel file named `data_user.xlsx` is in the same directory as the script. This file should have the following columns:
+   - `id_pelanggan`: Customer ID.
+   - `nama`: Customer name.
+   - `nomor_wa`: Customer's WhatsApp number (in international format, without the + sign).
+   - `status`: Customer status.
+   - `teks`: Additional text to be included in the WhatsApp message.
 
-2. **Konfigurasi Profil Chrome**:
-   Agar script dapat mengakses WhatsApp Web tanpa login berulang kali, harus mengatur `user_data` dengan path ke profil Chrome yang telah login ke WhatsApp Web:
+2. **Chrome Profile Configuration**:
+   To allow the script to access WhatsApp Web without requiring repeated logins, you need to set the `user_data` variable with the path to the Chrome profile that is already logged into WhatsApp Web:
    ```python
-   > user_data = "user-data-dir=C:\\Users\\username pc\\AppData\\Local\\Google\\Chrome\\User Data"
-   > file_path = r"D:\WAB\sebaran.png"
+   user_data = "user-data-dir=C:\\Users\\your_username\\AppData\\Local\\Google\\Chrome\\User Data"
+   ```
